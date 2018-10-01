@@ -20,7 +20,7 @@ class TasksController < ApplicationController
       
       if @task.save
           flash[:success] = 'Task が正常に作成されました'
-          redirect_to root_url
+          redirect_to @task
       else
           flash.now[:danger] = 'Taskが作成されませんでした'
           render 'toppages/index'
