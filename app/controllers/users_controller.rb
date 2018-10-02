@@ -3,6 +3,7 @@ class UsersController < ApplicationController
   
   include SessionsHelper
   
+  
   def index
     @users = User.all.page(params[:page])
   end
@@ -38,4 +39,14 @@ class UsersController < ApplicationController
   def user_params
     params.require(:user).permit(:name, :email, :password, :password_confirmation)
   end
+  
+  def block
+    @user = User.find(params[:user_id])
+    if current_user == @user
+      return
+    else
+      redirect_to root_url
+    end 
+  end
+  
 end
