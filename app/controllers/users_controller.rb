@@ -1,14 +1,20 @@
 class UsersController < ApplicationController
   before_action :require_user_logged_in, only: [:index, :show]
   
+  include SessionsHelper
+  
   def index
     @users = User.all.page(params[:page])
   end
 
   def show
     @user = User.find(params[:id])
-    @tasks = @user.tasks.order('created_at DESC').page(params[:page])
-    counts(@user)
+    if current_user.id == @user
+       @tasks = @user.tasks.order('created_at DESC').page(params[:page])
+       counts(@user)
+    else
+      redirect_to root_url
+    end
   end
 
   def new
