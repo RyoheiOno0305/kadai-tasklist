@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :require_user_logged_in, only: [:index, :show]
+  before_action :correct_user, only: [ :show ,:edit, :update,  :destroy]
   
   include SessionsHelper
   
@@ -10,12 +11,8 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
-    if current_user.id == @user
-       @tasks = @user.tasks.order('created_at DESC').page(params[:page])
-       counts(@user)
-    else
-      redirect_to root_url
-    end
+    @tasks = @user.tasks.order('created_at DESC').page(params[:page])
+    counts(@user)
   end
 
   def new
@@ -47,6 +44,13 @@ class UsersController < ApplicationController
     else
       redirect_to root_url
     end 
+  end
+  
+  def correct_user
+    @user = User.find_by(id: params[:id])
+    unless current_user == @user
+      redirect_to root_url
+    end
   end
   
 end

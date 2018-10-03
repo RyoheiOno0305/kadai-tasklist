@@ -1,19 +1,17 @@
-class TasksController < UsersController
+class TasksController < ApplicationController
   before_action :set_task, only: [:show, :edit, :update, :destroy]
   before_action :require_user_logged_in
-  before_action :correct_user
+  before_action :correct_user, only: [:index ,:show ,:edit ,:update, :destroy]
+  
+  include SessionsHelper
   
   
-  
-  
-  before_action :block
   
   def index
      @tasks = Task.all.page(params[:page])
   end
 
   def show
-      set_task
   end
 
   def new
@@ -30,16 +28,13 @@ class TasksController < UsersController
           flash.now[:danger] = 'Taskが作成されませんでした'
           render 'toppages/index'
       end
-      
           
   end
 
   def edit
-      set_task
   end
 
   def update
-       set_task
 
     if @task.update(task_params)
       flash[:success] = 'Task は正常に更新されました'
@@ -52,7 +47,6 @@ class TasksController < UsersController
     
   
   def destroy
-    set_task
     @task.destroy
 
     flash[:success] = 'Task は正常に削除されました'
